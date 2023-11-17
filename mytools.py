@@ -8,6 +8,24 @@ plt.rcParams["font.sans-serif"]=["SimHei"] #设置字体
 
 # 读取SPSS格式数据
 
+def 绘制单个类别变量柱状图(数据表, 变量: str):
+    """ 绘制单个类别变量柱状 """
+    x = 数据表[变量].value_counts().index
+    y = 数据表[变量].value_counts(normalize=True).values * 100
+    # 创建图
+    fig, ax = plt.subplots()
+    # 绘制柱状图
+    rects1 = ax.bar(x, y)
+    # 设置x轴变量名称
+    ax.set_xlabel(变量)
+    # 设置y轴最大值
+    ax.set_ylim(ymax=100)
+    # 在柱上方显示对应的值
+    ax.bar_label(rects1, fmt="%.1f", padding=3)
+    # 显示图形
+    plt.show()
+
+
 
 def 读取SPSS数据(文件所在位置及名称):
     """ 读取SPSS文件，保留标签内容和有序变量顺序 """
