@@ -8,6 +8,30 @@ plt.rcParams["font.sans-serif"]=["SimHei"] #设置字体
 
 # 读取SPSS格式数据
 
+import pandas as pd  
+import scipy.stats as stats  
+  
+def 单变量参数估计(file_path, confidence_level):  
+    file_path = "data/movie_data_cleaned.csv"  # 修正文件路径赋值  
+    df_movies = pd.read_csv(file_path)  
+      
+    # 计算均值和标准误差  
+    mean = df_movies['average'].mean()  
+    std_error = stats.sem(df_movies['average'])  
+      
+    # 设定置信水平  
+    confidence_level = 0.95  
+      
+    # 设定自由度  
+    freedom = len(df_movies['average']) - 1  # 使用合法的变量名“freedom”代替“自由度”  
+      
+    # 计算置信区间  
+    confidence_interval = stats.t.interval(confidence_level, freedom, loc=mean, scale=std_error)  
+      
+    # 输出结果  
+    print(f"均值：{mean:.2f}")  
+    print(f"均值在置信水平{confidence_level}下的置信区间为：", confidence_interval)
+
 def 绘制单个类别变量柱状图(数据表, 变量: str):
     """ 绘制单个类别变量柱状 """
     x = 数据表[变量].value_counts().index
@@ -28,9 +52,9 @@ def 绘制单个类别变量柱状图(数据表, 变量: str):
 
 
 def 读取SPSS数据(文件所在位置及名称):
-    """ 读取SPSS文件，保留标签内容和有序变量顺序 """
+    """ 读取SPSS文件,保留标签内容和有序变量顺序 """
     result, metadata = pyreadstat.read_sav(
-        文件所在位置及名称, apply_value_formats=True, formats_as_ordered_category=True)
+    文件所在位置及名称, apply_value_formats=True, formats_as_ordered_category=True)
     return result, metadata
 
 
@@ -41,24 +65,7 @@ def 有序变量描述统计函数(表名,变量名):
     描述统计表['累计比例']=描述统计表['比例'].cumsum()
     return 描述统计表
 
-# 调用自定义函数，执行区间估计推论统计 
-import pandas as pd
-from scipy import stats
-# 打开数据文件
-file_path = R"data/movie_data_cleaned.csv"
-df_movies = pd.read_csv(file_path)
-# 计算均值和标准误差
-mean = df_movies['average'].mean()
-std_error = stats.sem(df_movies['average'])
-# 设定置信水平
-confidence_level = 0.95
-# 设定自由度
-自由度 = len(df_movies['average']) - 1
-# 计算置信区间
-confidence_interval = stats.t.interval(confidence_level, 自由度, loc=mean, scale=std_error)
-# 输出结果
-print(F"均值：{mean: .2f}")
-print(F"均值在置信水平{confidence_level}下的置信区间为：", confidence_interval)
+
 
 def 数值变量描述统计1(数据表, 变量名):
     result = 数据表[变量名].describe()
